@@ -50,10 +50,6 @@
   self.imagesViewController.imageThree = imagesModel.imageThree;
 }
 
-+ (CGFloat)estimatedRowHeight {
-  return 44.0;
-}
-
 #pragma mark YLTableViewChildViewControllerCell
 
 - (YLExampleImagesViewController *)childViewController {

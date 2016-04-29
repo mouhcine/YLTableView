@@ -171,12 +171,16 @@
   NSAssert([tableView isKindOfClass:[YLTableView class]], @"This can only be the delegate of a YLTableView.");
 
   if (self.shouldCacheEstimatedRowHeights && self.indexPathToEstimatedRowHeight[[[self class] _keyForIndexPath:indexPath]]) {
-      return [self.indexPathToEstimatedRowHeight[[[self class] _keyForIndexPath:indexPath]] floatValue];
+    return [self.indexPathToEstimatedRowHeight[[[self class] _keyForIndexPath:indexPath]] floatValue];
   }
 
   Class cellClass = NSClassFromString([self tableView:tableView reuseIdentifierForCellAtIndexPath:indexPath]);
   NSAssert([cellClass conformsToProtocol:@protocol(YLTableViewCell)], @"You can only use cells conforming to YLTableViewCell.");
-  return [(id<YLTableViewCell>)cellClass estimatedRowHeight];
+  if ([cellClass instancesRespondToSelector:@selector(estimatedRowHeight)]) {
+    return [(id<YLTableViewCell>)cellClass estimatedRowHeight];
+  } else {
+    return UITableViewAutomaticDimension;
+  }
 }
 
 #pragma mark ChildViewController support
@@ -184,7 +188,7 @@
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
 
   if (self.shouldCacheEstimatedRowHeights) {
-    self.indexPathToEstimatedRowHeight[[[self class] _keyForIndexPath:indexPath]] = @(cell.frame.size.height);
+    self.indexPathToEstimatedRowHeight[[[self class] _keyForIndexPath:indexPath]] = @(CGRectGetHeight(cell.frame));
   }
 
   UIViewController *parentViewController = self.parentViewController;

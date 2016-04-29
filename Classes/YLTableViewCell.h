@@ -18,6 +18,7 @@
  */
 - (void)setModel:(nullable id)model;
 
+@optional
 /**
  Estimated height for a cell, called within tableView:estimatedHeightForRowAtIndexPath
  */
